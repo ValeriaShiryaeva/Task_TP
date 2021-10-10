@@ -22,7 +22,7 @@ void base_products();
 void menu();
 void print_menu();
 
-void selection_products();
+bool selection_products();
 void payment_purchase();
 void output_purchase();
 void calculating_total_purchase();
@@ -60,8 +60,8 @@ void menu() {
 		output_products();
 		break;
 	case 1:
-		selection_products();
-		payment_purchase();
+		if (selection_products() == true)
+			payment_purchase();
 		break;
 	case 2:
 		menu_administrator();
@@ -79,25 +79,34 @@ void print_menu() {
 	cout << "3. Выйти из программы" << endl;
 }
 
-void selection_products() {
-	int key = 27;
-	output_products();
-	cout << "(чтобы закончить выбор продуктов, нажмите esc)" << endl;
-	cout << "(чтобы продолжить выбор продуктов, нажмите enter)" << endl;
-	while (1) {
-		cout << "Выберите продукт. ";
-		int number_product = input_number();
-		if (checking_number_products(number_product) == true)
-		{
-			Check* check = new Check;
-			check->input_purchase(products.at(number_product - 1));
-			purchase.push_back(check);
-			if (key == _getch())
-				break;
-		}
-		else
-			cout << "В магазине нет такого продукта. " << endl;
+bool selection_products() {
+	if (products.size() == 0)
+	{
+		cout << "В нашем магазине нет продуктов, Вы не можете ничего купить." << endl;
+		cout << "(позовите администратора, чтобы он добавил продукты)" << endl << endl;
+		return false;
 	}
+	else {
+		int key = 27;
+		output_products();
+		cout << "(чтобы закончить выбор продуктов, нажмите esc)" << endl;
+		cout << "(чтобы продолжить выбор продуктов, нажмите enter)" << endl;
+		while (1) {
+			cout << "Выберите продукт. ";
+			int number_product = input_number();
+			if (checking_number_products(number_product) == true)
+			{
+				Check* check = new Check;
+				check->input_purchase(products.at(number_product - 1));
+				purchase.push_back(check);
+				if (key == _getch())
+					break;
+			}
+			else
+				cout << "В магазине нет такого продукта. " << endl;
+		}
+		return true;
+	}	
 }
 
 void payment_purchase() {
@@ -190,6 +199,7 @@ void menu_administrator() {
 				cout << endl;
 				for (int i = 0; i < quantity_products; i++) {
 					while (1) {
+						output_products();
 						cout << "Введите номер продукта, котрый хотите удалить: ";
 						number_products = input_number();
 						if (checking_number_products(number_products) == true)
