@@ -244,7 +244,7 @@ void output_products() {
 }
 
 bool checking_number_products(int number_products) {
-	if (number_products <= products.size())
+	if (number_products <= products.size() && (number_products > 0))
 		return true;
 	else
 		return false;
